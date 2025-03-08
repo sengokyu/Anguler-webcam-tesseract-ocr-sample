@@ -5,11 +5,7 @@
   "projects": {
     "ex-camera-ocr": {
       "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
+      "schematics": {},
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -23,7 +19,6 @@
             "polyfills": [
             ],
             "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
@@ -32,7 +27,7 @@
             ],
             "styles": [
               "@angular/material/prebuilt-themes/cyan-orange.css",
-              "src/styles.scss"
+              "src/styles.css"
             ],
             "scripts": []
           },
@@ -83,7 +78,6 @@
               "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
@@ -92,7 +86,7 @@
             ],
             "styles": [
               "@angular/material/prebuilt-themes/cyan-orange.css",
-              "src/styles.scss"
+              "src/styles.css"
             ],
             "scripts": []
           }
