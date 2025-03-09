@@ -1,0 +1,12 @@
+.hidden {
+  display: none;
+}
+
+video {
+  background: rgb(9, 9, 121);
+  background: linear-gradient(
+    180deg,
+    rgba(9, 9, 121, 1) 20%,
+    rgba(196, 242, 251, 1) 100%
+  );
+}

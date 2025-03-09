@@ -1,21 +1,54 @@
-<div class="flex flex-col">
-  @if (devices$ | async; as devices) {
-    @if (devices.length === 0) {
-      <p>ビデオデバイスがありません</p>
-    } @else {
-      <mat-form-field>
-        <mat-label>ビデオデバイスを選択してください</mat-label>
-        <mat-select [formControl]="deviceFc">
-          @for (device of devices; let i = $index; track $index) {
-            <mat-option
-              [value]="device"
-              >{{ device.label ? device.label : `Camera ${i + 1}`}}</mat-option
-            >
+<div class="flex flex-col w-full">
+  <mat-toolbar>
+    @if (devices$ | async; as devices) {
+      @if (devices.length === 0) {
+        <div>ビデオデバイスがありません</div>
+      } @else {
+        <div class="min-w-24 flex-shrink">
+          <mat-select
+            [formControl]="deviceFc"
+            placeholder="ビデオデバイスを選択してください"
+          >
+            @for (device of devices; let i = $index; track $index) {
+              <mat-option
+                [value]="device"
+                >{{ device.label ? device.label : `Camera ${i + 1}`}}</mat-option
+              >
+            }
+          </mat-select>
+        </div>
+        <div class="flex-grow"></div>
+        <div>
+          @if (playStop$ | async; as playStop) {
+            <button mat-icon-button (click)="onClickPlayStop()">
+              <mat-icon>{{ playStop }}</mat-icon>
+            </button>
           }
-        </mat-select>
-      </mat-form-field>
+        </div>
+      }
     }
-  }
+  </mat-toolbar>
 
-  <video #video autoplay muted playsinline class="flex-grow w-full"></video>
+  <div class="relative flex-grow w-full">
+    <video #video autoplay muted playsinline class="w-full h-full"></video>
+    <div
+      [class.hidden]="hideCanvas()"
+      class="absolute top-0 left-0 right-0 bottom-0 z-10"
+    >
+      <canvas #canvas class="w-full h-full"></canvas>
+      <div class="absolute top-0 right-0 z-20">
+        <button mat-icon-button (click)="onClickClose()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <mat-toolbar>
+    <div class="flex-grow"></div>
+    <button mat-icon-button (click)="onClick()">
+      <mat-icon>camera</mat-icon>
+    </button>
+    <div class="flex-grow"></div>
+  </mat-toolbar>
 </div>
