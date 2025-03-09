@@ -17,6 +17,7 @@ export const enumerateVideoInputDevices = (): Observable<MediaDeviceInfo[]> => {
 
 export const getUserMedia = (
   device: MediaDeviceInfo,
+  facingMode: 'user' | 'environment',
 ): Observable<MediaStream> => {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     return throwError(
@@ -26,7 +27,7 @@ export const getUserMedia = (
 
   const constrains = {
     exact: device.deviceId,
-    video: true,
+    video: { facingMode },
   } as MediaStreamConstraints;
 
   return from(navigator.mediaDevices.getUserMedia(constrains));

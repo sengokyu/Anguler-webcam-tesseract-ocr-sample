@@ -103,13 +103,18 @@ export class CameraOcrComponent implements OnInit, AfterViewInit, OnDestroy {
   private stopTracks(): void {
     this.deviceFc.setValue(null, { emitEvent: false });
     this.stream?.getVideoTracks().forEach((track) => track.stop());
+    this.playStop$.next(undefined);
   }
 
   private onChangeDeviceFc(value: MediaDeviceInfo | null): void {
     if (value) {
-      getUserMedia(value).subscribe((stream) => {
+      getUserMedia(value, 'environment').subscribe((stream) => {
+        const settings = stream.getVideoTracks()[0].getSettings();
+
+        this.resizeCanvas(settings.width!, settings.height!);
+
         this.video.srcObject = stream;
-        this.video.play();
+
         this.playStop$.next('stop');
       });
     }
@@ -119,7 +124,13 @@ export class CameraOcrComponent implements OnInit, AfterViewInit, OnDestroy {
     const canvas = this.canvasElement.nativeElement;
     const context = canvas.getContext('2d');
 
-    context?.drawImage(this.video, 0, 0, canvas.width, canvas.height);
+    context?.drawImage(
+      this.video,
+      0,
+      0,
+      this.video.videoWidth,
+      this.video.videoHeight,
+    );
 
     this.hideCanvas.set(false);
   }
@@ -136,5 +147,13 @@ export class CameraOcrComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe(() => {
         this.hideCanvas.set(true);
       });
+  }
+
+  private resizeCanvas(width: number, height: number) {
+    const canvas = this.canvasElement.nativeElement;
+
+    // ビデオの解像度と同じにする
+    canvas.width = width;
+    canvas.height = height;
   }
 }
