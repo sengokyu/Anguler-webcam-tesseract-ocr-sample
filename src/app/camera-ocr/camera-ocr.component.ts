@@ -13,11 +13,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { OverlaySpinnerService } from '../overlay-spinner/overlay-spinner.service';
+import { TesseractService } from '../tesseract.service';
 import {
   enumerateVideoInputDevices,
   getUserMedia,
 } from '../utils/user-media-utils';
+import { MatDialog } from '@angular/material/dialog';
+import { MessageDialogComponent } from '../message-dialog/message-dialog.component';
 
 // 停止ボタンの表示
 type StopType = 'stop' | undefined;
@@ -47,9 +51,16 @@ export class CameraOcrComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: true })
   private canvasElement!: ElementRef<HTMLCanvasElement>;
 
-  constructor() {}
+  constructor(
+    private overlaySpinnerService: OverlaySpinnerService,
+    private tesseractService: TesseractService,
+    private dialog: MatDialog,
+  ) {}
 
   ngOnInit(): void {
+    this.overlaySpinnerService.show();
+    this.tesseractService.init().subscribe(() => {});
+
     this.devices$ = enumerateVideoInputDevices();
     this.deviceFc.valueChanges.subscribe((device) => {
       this.onChangeDeviceFc(device);
@@ -64,19 +75,16 @@ export class CameraOcrComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onClick(): void {
-    const canvas = this.canvasElement.nativeElement;
-    const context = canvas.getContext('2d');
+    this.showCanvas();
 
-    context?.drawImage(this.video, 0, 0, canvas.width, canvas.height);
-
-    this.hideCanvas.set(false);
+    this.tesseractService
+      .recognize(this.canvasElement.nativeElement)
+      .subscribe((text) => {
+        this.showResult(text);
+      });
   }
 
-  onClickClose(): void {
-    this.hideCanvas.set(true);
-  }
-
-  onClickPlayStop(): void {
+  onClickStop(): void {
     if (!this.stream) {
       return;
     }
@@ -105,5 +113,28 @@ export class CameraOcrComponent implements OnInit, AfterViewInit, OnDestroy {
         this.playStop$.next('stop');
       });
     }
+  }
+
+  private showCanvas(): void {
+    const canvas = this.canvasElement.nativeElement;
+    const context = canvas.getContext('2d');
+
+    context?.drawImage(this.video, 0, 0, canvas.width, canvas.height);
+
+    this.hideCanvas.set(false);
+  }
+
+  private showResult(text: string | null) {
+    this.dialog
+      .open(MessageDialogComponent, {
+        data: {
+          title: '読み取り結果結果',
+          message: text,
+        },
+      })
+      .afterClosed()
+      .subscribe(() => {
+        this.hideCanvas.set(true);
+      });
   }
 }

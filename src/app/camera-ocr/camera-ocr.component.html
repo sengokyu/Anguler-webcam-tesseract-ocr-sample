@@ -19,9 +19,9 @@
         </div>
         <div class="flex-grow"></div>
         <div>
-          @if (playStop$ | async; as playStop) {
-            <button mat-icon-button (click)="onClickPlayStop()">
-              <mat-icon>{{ playStop }}</mat-icon>
+          @if (playStop$ | async) {
+            <button mat-icon-button (click)="onClickStop()">
+              <mat-icon>stop</mat-icon>
             </button>
           }
         </div>
@@ -36,11 +36,6 @@
       class="absolute top-0 left-0 right-0 bottom-0 z-10"
     >
       <canvas #canvas class="w-full h-full"></canvas>
-      <div class="absolute top-0 right-0 z-20">
-        <button mat-icon-button (click)="onClickClose()">
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
     </div>
   </div>
 
