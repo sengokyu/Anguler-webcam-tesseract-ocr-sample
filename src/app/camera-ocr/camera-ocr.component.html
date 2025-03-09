@@ -1,49 +1,51 @@
-<div class="flex flex-col w-full">
-  <mat-toolbar>
-    @if (devices$ | async; as devices) {
-      @if (devices.length === 0) {
-        <div>ビデオデバイスがありません</div>
-      } @else {
-        <div class="min-w-24 flex-shrink">
-          <mat-select
-            [formControl]="deviceFc"
-            placeholder="ビデオデバイスを選択してください"
-          >
-            @for (device of devices; let i = $index; track $index) {
-              <mat-option
-                [value]="device"
-                >{{ device.label ? device.label : `Camera ${i + 1}`}}</mat-option
-              >
-            }
-          </mat-select>
-        </div>
-        <div class="flex-grow"></div>
-        <div>
-          @if (playStop$ | async) {
-            <button mat-icon-button (click)="onClickStop()">
-              <mat-icon>stop</mat-icon>
-            </button>
-          }
-        </div>
-      }
-    }
-  </mat-toolbar>
-
-  <div class="relative flex-grow w-full">
-    <video #video autoplay muted playsinline class="w-full h-full"></video>
-    <div
-      [class.hidden]="hideCanvas()"
-      class="absolute top-0 left-0 right-0 bottom-0 z-10"
-    >
-      <canvas #canvas class="w-full h-full"></canvas>
-    </div>
+<div class="relative w-screen h-screen">
+  <video #video autoplay muted playsinline class="w-full h-full"></video>
+  <div
+    [class.hidden]="hideCanvas()"
+    class="absolute top-0 left-0 right-0 bottom-0 z-10 flex place-items-center"
+  >
+    <canvas #canvas class="w-full"></canvas>
   </div>
-
-  <mat-toolbar>
-    <div class="flex-grow"></div>
-    <button mat-icon-button (click)="onClick()">
-      <mat-icon>camera</mat-icon>
-    </button>
-    <div class="flex-grow"></div>
-  </mat-toolbar>
 </div>
+
+<!-- Top bar -->
+<mat-toolbar class="fixed top-0 left-0">
+  @if (devices$ | async; as devices) {
+    @if (devices.length === 0) {
+      <div>ビデオデバイスがありません</div>
+    } @else {
+      <div class="min-w-24 flex-shrink">
+        <mat-select
+          [formControl]="deviceFc"
+          placeholder="ビデオデバイスを選択してください"
+        >
+          @for (device of devices; let i = $index; track $index) {
+            <mat-option
+              [value]="device"
+              >{{ device.label ? device.label : `Camera ${i + 1}`}}</mat-option
+            >
+          }
+        </mat-select>
+      </div>
+      <div class="flex-grow"></div>
+      <div>
+        @if (playStop$ | async) {
+          <button mat-icon-button (click)="onClickStop()">
+            <mat-icon>stop</mat-icon>
+          </button>
+        }
+      </div>
+    }
+  }
+</mat-toolbar>
+<!-- /Top bar -->
+
+<!-- Bottom bar -->
+<mat-toolbar class="fixed bottom-0 left-0">
+  <div class="flex-grow"></div>
+  <button mat-icon-button (click)="onClick()">
+    <mat-icon>camera</mat-icon>
+  </button>
+  <div class="flex-grow"></div>
+</mat-toolbar>
+<!-- /Bottom bar -->
