@@ -19,4 +19,4 @@ index 0000000..1374763
 +
 +## Demo
 +
-+[Demo](https://sengoku.github.io/Anguler-webcam-tesseract-ocr-sample/browser/)
++[Demo](https://sengoku.github.io/Anguler-webcam-tesseract-ocr-sample/out/browser/)
